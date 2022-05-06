@@ -67,3 +67,6 @@ keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
 -- keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 -- keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
+ -- Tex compiling and viewing
+keymap("n", "<leader>zc", ":w !pdflatex %:r.tex && bibtex %:r.aux && pdflatex %:r.tex && pdflatex %:r.tex && rm %:r.aux %:r.log %:r.blg %:r.bbl <CR>", opts)
+keymap("n", "<leader>zv", ":!zathura %:r.pdf > /dev/null 2>&1 & <CR>", opts)
