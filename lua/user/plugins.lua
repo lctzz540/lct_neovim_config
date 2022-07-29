@@ -86,7 +86,7 @@ return packer.startup(function(use)
   use {'mfussenegger/nvim-jdtls',
 	    ft = {'java', 'jar'},
     }
-
+  use('MunifTanjim/prettier.nvim')
   -- Telescope
   use "nvim-telescope/telescope.nvim"
 
@@ -103,17 +103,7 @@ return packer.startup(function(use)
   use "mfussenegger/nvim-dap"
   --Jupyter
   use { "untitled-ai/jupyter_ascending.vim" }
-  use {
-    "ahmedkhalf/jupyter-nvim",
-    run = ":UpdateRemotePlugins",
-    config = function()
-      require("jupyter-nvim").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      }
-    end
-  }
+  use "oberblastmeister/neuron.nvim"
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then

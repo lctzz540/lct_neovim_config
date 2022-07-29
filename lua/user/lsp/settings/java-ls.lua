@@ -1,4 +1,4 @@
-requre'lspconfig'.jdtls.setup {cmd = {'java-linux-ls'}}}
+require'lspconfig'.jdtls.setup {cmd = {'java-linux-ls'}}}
 -- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 local config = {
   -- The command that starts the language server
