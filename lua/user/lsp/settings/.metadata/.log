@@ -1,0 +1,38 @@
+!SESSION 2022-07-30 21:33:24.286 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=17.0.4
+java.vendor=Homebrew
+BootLoader constants: OS=macosx, ARCH=aarch64, WS=cocoa, NL=en_VN
+Framework arguments:  --add-modules=ALL-SYSTEM --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
+Command-line arguments:  -data  --add-modules=ALL-SYSTEM --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-07-30 21:33:24.981
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is started
+
+!ENTRY org.eclipse.equinox.launcher.cocoa.macosx.x86_64 2 0 2022-07-30 21:33:24.989
+!MESSAGE Could not resolve module: org.eclipse.equinox.launcher.cocoa.macosx.x86_64 [32]
+  Unresolved requirement: Require-Capability: eclipse.platform; filter:="(& (osgi.ws=cocoa) (osgi.os=macosx) (osgi.arch=x86_64) )"
+  Unresolved requirement: Require-Capability: eclipse.platform; filter:="(& (osgi.ws=cocoa) (osgi.os=macosx) (osgi.arch=x86_64) )"
+
+
+!ENTRY org.eclipse.osgi 4 0 2022-07-30 21:33:24.989
+!MESSAGE Application error
+!STACK 1
+java.lang.RuntimeException: Application "org.eclipse.jdt.ls.core.id3" could not be found in the registry. The applications available are: org.eclipse.ant.core.antRunner, org.eclipse.equinox.app.error, org.eclipse.jdt.apt.core.aptBuild, org.eclipse.jdt.core.JavaIndexer, org.eclipse.jdt.ls.core.id1.
+	at org.eclipse.equinox.internal.app.EclipseAppContainer.startDefaultApp(EclipseAppContainer.java:252)
+	at org.eclipse.equinox.internal.app.MainApplicationLauncher.run(MainApplicationLauncher.java:33)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:136)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:402)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:255)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:659)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:596)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1467)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1440)
+
+!ENTRY org.eclipse.jdt.ls.core 1 0 2022-07-30 21:33:24.990
+!MESSAGE class org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin is stopping:

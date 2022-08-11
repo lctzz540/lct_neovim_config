@@ -84,9 +84,15 @@ return packer.startup(function(use)
   use "tamago324/nlsp-settings.nvim" -- language server settings defined in json for
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
   use {'mfussenegger/nvim-jdtls',
+      config = function()
+      -- https://github.com/fitrh/init.nvim/blob/main/lua/plugin/jdtls/config.lua
+      require("plugin.jdtls.config").attach()
+      end,
+      module = "jdtls",
 	    ft = {'java', 'jar'},
-    }
+  }
   use('MunifTanjim/prettier.nvim')
+  use {'akinsho/flutter-tools.nvim', requires = 'nvim-lua/plenary.nvim'}
   -- Telescope
   use "nvim-telescope/telescope.nvim"
 
@@ -103,7 +109,7 @@ return packer.startup(function(use)
   use "mfussenegger/nvim-dap"
   --Jupyter
   use { "untitled-ai/jupyter_ascending.vim" }
-  use "oberblastmeister/neuron.nvim"
+
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then

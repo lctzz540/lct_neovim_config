@@ -1,67 +1,90 @@
-require'lspconfig'.jdtls.setup {cmd = {'java-linux-ls'}}}
--- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
+local on_attach = function(_, bufnr)
+    require('jdtls').setup_dap({ hotcodereplace = 'auto' })
+    require'jdtls.setup'.add_commands()
+    require("configs.lspconfig").on_attach(_, bufnr)
+    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    local opts = { noremap=true, silent=true }
+     -- Java specific
+    buf_set_keymap("n", "<leader>ji", "<Cmd>lua require'jdtls'.organize_imports()<CR>", opts)
+    buf_set_keymap("n", "<leader>jt", "<Cmd>lua require'jdtls'.test_class()<CR>", opts)
+    buf_set_keymap("n", "<leader>jn", "<Cmd>lua require'jdtls'.test_nearest_method()<CR>", opts)
+    buf_set_keymap("v", "<leader>je", "<Esc><Cmd>lua require('jdtls').extract_variable(true)<CR>", opts)
+    buf_set_keymap("n", "<leader>je", "<Cmd>lua require('jdtls').extract_variable()<CR>", opts)
+    buf_set_keymap("v", "<leader>jm", "<Esc><Cmd>lua require('jdtls').extract_method(true)<CR>", opts)
+
+end
+
+local root_markers = {'gradlew', 'pom.xml', '.vscode', '.project'}
+local root_dir = require('jdtls.setup').find_root(root_markers)
+local home = os.getenv('HOME')
+
+local capabilities = require("configs.lspconfig").capabilities
+capabilities.workspace.configuration = true
+capabilities.textDocument.completion.completionItem.snippetSupport = false
+local workspace_folder = home .. "/.local/workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 local config = {
-  -- The command that starts the language server
-  -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
-  cmd = {
-
-    -- 💀
-    'java', -- or '/path/to/java11_or_newer/bin/java'
-            -- depends on if `java` is in your $PATH env variable and if it points to the right version.
-
-    '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-    '-Dosgi.bundles.defaultStartLevel=4',
-    '-Declipse.product=org.eclipse.jdt.ls.core.product',
-    '-Dlog.protocol=true',
-    '-Dlog.level=ALL',
-    '-Xms1g',
-    '--add-modules=ALL-SYSTEM',
-    '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-    '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-
-    -- 💀
-    '-jar', '/path/to/jdtls_install_location/plugins/org.eclipse.equinox.launcher_VERSION_NUMBER.jar',
-         -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
-         -- Must point to the                                                     Change this to
-         -- eclipse.jdt.ls installation                                           the actual version
-
-
-    -- 💀
-    '-configuration', '/path/to/jdtls_install_location/config_SYSTEM',
-                    -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        ^^^^^^
-                    -- Must point to the                      Change to one of `linux`, `win` or `mac`
-                    -- eclipse.jdt.ls installation            Depending on your system.
-
-
-    -- 💀
-    -- See `data directory configuration` section in the README
-    '-data', '/path/to/unique/per/project/workspace/folder'
-  },
-
-  -- 💀
-  -- This is the default if not provided, you can remove it. Or adjust as needed.
-  -- One dedicated LSP server & client will be started per unique root_dir
-  root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
-
-  -- Here you can configure eclipse.jdt.ls specific settings
-  -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-  -- for a list of options
-  settings = {
-    java = {
-    }
-  },
-
-  -- Language server `initializationOptions`
-  -- You need to extend the `bundles` with paths to jar files
-  -- if you want to use additional eclipse.jdt.ls plugins.
-  --
-  -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
-  --
-  -- If you don't plan on using the debugger or other eclipse.jdt.ls plugins you can remove this
-  init_options = {
-    bundles = {}
-  },
+    flags = {
+        allow_incremental_sync = true,
+    };
+    capabilities = capabilities,
+    on_attach = on_attach,
 }
--- This starts a new client & server,
--- or attaches to an existing client & server depending on the `root_dir`.
+
+config.settings = {
+    -- ['java.format.settings.url'] = home .. "/.local/share/lsp/jdtls/java-google-formatter.xml",
+    -- ['java.format.settings.profile'] = "GoogleStyle",
+    java = {
+        signatureHelp = { enabled = true };
+        contentProvider = { preferred = 'fernflower' };
+        completion = {
+            favoriteStaticMembers = {
+                "org.hamcrest.MatcherAssert.assertThat",
+                "org.hamcrest.Matchers.*",
+                "org.hamcrest.CoreMatchers.*",
+                "org.junit.jupiter.api.Assertions.*",
+                "java.util.Objects.requireNonNull",
+                "java.util.Objects.requireNonNullElse",
+                "org.mockito.Mockito.*"
+            }
+        };
+        sources = {
+            organizeImports = {
+            starThreshold = 9999;
+            staticStarThreshold = 9999;
+            };
+        };
+        codeGeneration = {
+            toString = {
+                template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}"
+            }
+        };
+        configuration = {
+            runtimes = {
+                {
+                    name = "JavaSE-11",
+                    path = home .. "/opt/homebrew/opt/java11/bin/java",
+                },
+            }
+        };
+    };
+}
+
+config.cmd = {'java-lsp', workspace_folder}
+config.on_init = function(client, _)
+    client.notify('workspace/didChangeConfiguration', { settings = config.settings })
+end
+
+local extendedClientCapabilities = require'jdtls'.extendedClientCapabilities
+extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
+
+config.init_options = {
+    extendedClientCapabilities = extendedClientCapabilities;
+}
+-- Server
 require('jdtls').start_or_attach(config)
+
